@@ -1,0 +1,61 @@
+services:
+  account_service_database:
+    image: mysql:9.5.0
+    container_name: account_service_database-0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_account_service
+    volumes:
+      - account_service_mysql_data:/var/lib/mysql
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 20s
+
+  account_service:
+    build: ../account_service
+    container_name: account_service-0
+    restart: always
+    volumes:
+      - ./configs/account_service.yml:/home/account_service.yml:ro
+    command: /account_service -c /home/account_service.yml
+    depends_on:
+      account_service_database:
+        condition: service_healthy
+
+  redis:
+    image: redis:8.4.0
+    container_name: redis-0
+    restart: always
+
+  gateway:
+    build: ../gateway
+    container_name: gateway-0
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./configs/gateway.yml:/home/gateway.yml:ro
+    command: /gateway -c /home/gateway.yml
+    depends_on:
+      account_service:
+        condition: service_started
+      redis:
+        condition: service_started
+
+volumes:
+  account_service_mysql_data:
+
+networks:
+  default:
+    name: fiagram_network

@@ -1,6 +1,6 @@
-[submodule "account_service"]
-	path = account_service
-	url = https://github.com/Fiagram/account_service.git
-[submodule "gateway"]
-	path = gateway
-	url = https://github.com/Fiagram/gateway.git
+[submodule "standalone"]
+	path = standalone
+	url = https://github.com/Fiagram/standalone.git
+[submodule "web_server"]
+	path = web_server
+	url = https://github.com/Fiagram/web_server.git

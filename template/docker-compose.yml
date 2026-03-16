@@ -29,11 +29,10 @@ services:
 
   fiagram_standalone:
     build: ../standalone
-    image: fiagram_standalone:0.0.0
     container_name: fiagram_standalone-0
     restart: always
     ports:
-      - "11001:11001"
+      - "11000:11000"
     volumes:
       - ./configs/standalone.yaml:/home/standalone.yaml:ro
     command: /standalone -c /home/standalone.yaml
@@ -41,6 +40,20 @@ services:
       fiagram_mysql:
         condition: service_healthy
       fiagram_redis:
+        condition: service_started
+
+  fiagram_web_server:
+    build: ../web_server
+    container_name: fiagram_web_server-0
+    restart: always
+    env_file:
+      - ../web_server/.env
+    ports:
+      - "12000:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      fiagram_standalone:
         condition: service_started
 
 volumes:

@@ -5,7 +5,6 @@ http:
     isEnable: false
     allowOrigins:
       - "https://fiagram.io.vn"
-      - "https://app.fiagram.io.vn"
     allowMethods:
       - GET
       - POST
@@ -21,9 +20,14 @@ http:
       - Content-Length
     allowCredentials: true
     maxAge: 12h
+  cookie:
+    domain: fiagram.io.vn
+    path: "/"
+    sameSite: none
+    secure: true
+    httpOnly: true
 
 auth:
-  domain:
   hash:
     cost: 10
   token:

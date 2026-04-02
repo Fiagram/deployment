@@ -27,6 +27,11 @@ http:
     secure: true
     httpOnly: true
 
+message_queue:
+  addresses:
+    - fiagram_kafka-0:9092
+  clientID: standalone
+
 auth:
   hash:
     cost: 10
